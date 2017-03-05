@@ -150,11 +150,15 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
     "node" specifies which node the basis function corresponds to, 
     "xi" is the point (in the bi-unit domain) where the function is being evaluated.
     You need to calculate the value of the specified basis function and order at the given quadrature pt.*/
-
+    if (basisFunctionOrder==1){
+        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        }
+    
   double value = 1.; //Store the value of the basis function in this variable
 
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
+    value =  xi_at_
 
   //EDIT
 
@@ -185,7 +189,7 @@ template <int dim>
 void FEM<dim>::generate_mesh(unsigned int numberOfElements){
 
   //Define the limits of your domain
-  L = ; //EDIT
+  L = 0.1; //EDIT
   double x_min = 0.;
   double x_max = L;
 
@@ -229,7 +233,7 @@ template <int dim>
 void FEM<dim>::setup_system(){
 
   //Define constants for problem (Dirichlet boundary values)
-  g1 = ; g2 = ; //EDIT
+  g1 = 0; g2 = 0.001; //EDIT
 
   //Let deal.II organize degrees of freedom
   dof_handler.distribute_dofs (fe);
