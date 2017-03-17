@@ -83,7 +83,7 @@ class FEM
   Vector<double>        D, F; 		 //Global vectors - Solution vector (D) and Global force vector (F)
   std::vector<double>   nodeLocation;	 //Vector of the x-coordinate of nodes by global dof number
   std::map<unsigned int,double> boundary_values;	//Map of dirichlet boundary conditions
-  double                basisFunctionOrder, prob, L, g1, g2;    
+  double                basisFunctionOrder, prob, L, g1, g2;    // g1, g2 boundary values
 
   //solution name array
   std::vector<std::string> nodal_solution_names;
@@ -150,18 +150,39 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
     "node" specifies which node the basis function corresponds to, 
     "xi" is the point (in the bi-unit domain) where the function is being evaluated.
     You need to calculate the value of the specified basis function and order at the given quadrature pt.*/
+    
+    double value = 1.; //Store the value of the basis function in this variable
+    /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
+    at any node in the element - using deal.II's element node numbering pattern.*/
+    double xe  = xi_at_node(node);
     if (basisFunctionOrder==1){
         std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe == -1.){
+                value = (1-xi)/2;
+            }
+            else if (xe == 1.){
+                value = (1+xi)/2
+            }
+            else{
+                std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
+                }
         }
-    
-  double value = 1.; //Store the value of the basis function in this variable
-
-  /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
-    at any node in the element - using deal.II's element node numbering pattern.*/
-    value =  xi_at_
-
+    else if (basisFunctionOrder==2){
+        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe = -1.){
+                value = -xi*(1-xi)/2;
+            }
+            else if (xe == 1.){
+                value = (1+xi)*(1-xi);
+                }
+            else if (xe == 0.){
+                value = xi*(1+xi)/2;
+                }
+          else{
+                std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
+              }  
+        }
   //EDIT
-
   return value;
 }
 
