@@ -161,7 +161,7 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
                 value = (1-xi)/2;
             }
             else if (xe == 1.){
-                value = (1+xi)/2
+                value = (1+xi)/2;
             }
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
@@ -199,6 +199,34 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
 
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
+    double xe  = xi_at_node(node);
+    if (basisFunctionOrder==1){
+        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe == -1.){
+                value = -1/2;
+            }
+            else if (xe == 1.){
+                value = 1/2;
+            }
+            else{
+                std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
+                }
+        }
+    else if (basisFunctionOrder==2){
+        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe = -1.){
+                value = -(1-2*xi)/2;
+            }
+            else if (xe == 1.){
+                value = -2*xi;
+                }
+            else if (xe == 0.){
+                value = (1+2*xi)/2;
+                }
+          else{
+                std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
+              }  
+        }
 
   //EDIT
 
