@@ -335,7 +335,7 @@ void FEM<dim>::assemble_system(){
   FullMatrix<double> 				Klocal (dofs_per_elem, dofs_per_elem);
   Vector<double>      			Flocal (dofs_per_elem);
   std::vector<unsigned int> local_dof_indices (dofs_per_elem);
-  double										h_e, x, f;
+  double										h_e, x, f, A;
 
   //loop over elements  
   typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(), 
@@ -355,6 +355,8 @@ void FEM<dim>::assemble_system(){
 
     //Loop over local DOFs and quadrature points to populate Flocal and Klocal.
     Flocal = 0.;
+    A = pow(10, -4); // area
+    f = pow(10,11);
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int q=0; q<quadRule; q++){
 	x = 0;
@@ -362,6 +364,7 @@ void FEM<dim>::assemble_system(){
 	for(unsigned int B=0; B<dofs_per_elem; B++){
 	  x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
 	}
+	Flocal[A] = basis_function(A,quad_points[q])*quad_weight[q]
 	//EDIT - Define Flocal.
       }
     }
