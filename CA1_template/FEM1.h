@@ -156,20 +156,20 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
     if (basisFunctionOrder==1){
-        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
-                value = (1-xi)/2;
+                value = (1.-xi)/2.;
             }
             else if (xe == 1.){
-                value = (1+xi)/2;
+                value = (1.+xi)/2.;
             }
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
                 }
         }
     else if (basisFunctionOrder==2){
-        std::cout  << "the basis Function order is:" << basisFunctionOrder;
-        if (xe = -1.){
+        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe == -1.){
                 value = -xi*(1-xi)/2;
             }
             else if (xe == 1.){
@@ -195,33 +195,34 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
     You need to calculate the value of the derivative of the specified basis function and order at the given quadrature pt.
     Note that this is the derivative with respect to xi (not x)*/
 
-  double value = 0.; //Store the value of the gradient of the basis function in this variable
+   double value = 0.; //Store the value of the gradient of the basis function in this variable
 
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
     if (basisFunctionOrder==1){
-        std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
-                value = -1/2;
+                value = -1.0/2;
             }
             else if (xe == 1.){
-                value = 1/2;
+                value = 1.0/2;
             }
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
                 }
+            //std::cout  << "unknow xe value for the order:" <<value;
         }
     else if (basisFunctionOrder==2){
-        std::cout  << "the basis Function order is:" << basisFunctionOrder;
-        if (xe = -1.){
-                value = -(1-2*xi)/2;
+        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
+        if (xe == -1.){
+                value = -(1.-2.*xi)/2.0;
             }
             else if (xe == 1.){
-                value = -2*xi;
+                value = -2.0*xi;
                 }
             else if (xe == 0.){
-                value = (1+2*xi)/2;
+                value = (1.+2.*xi)/2.0;
                 }
           else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
@@ -363,8 +364,9 @@ void FEM<dim>::assemble_system(){
 	for(unsigned int B=0; B<dofs_per_elem; B++){
 	  x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
 	}
-	Flocal(A) = basis_function(A,quad_points[q])*f*x*quad_weight[q]
+	Flocal(A) += basis_function(A,quad_points[q])*f*x*quad_weight[q];
 	//EDIT - Define Flocal.
+	//std::cout  << " Flocal(A) :  " << Flocal(A) ;
       }
     }
     //Add nonzero Neumann condition, if applicable
@@ -375,13 +377,14 @@ void FEM<dim>::assemble_system(){
     }
 
     //Loop over local DOFs and quadrature points to populate Klocal
-    Klocal = 0;
+    //Klocal = 0;
     E = pow(10,11); // E=10^11Pa
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int B=0; B<dofs_per_elem; B++){
 	for(unsigned int q=0; q<quadRule; q++){
-	    Klocal(A,B) = 2*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q])
+	    Klocal(A,B) += 2*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q]);
 	  //EDIT - Define Klocal.
+	  //std::cout  << "  Klocal(A,B): " << basis_gradient(A,quad_points[q])<<basis_gradient(B,quad_points[q]);
 	}
       }
     }
@@ -397,6 +400,12 @@ void FEM<dim>::assemble_system(){
 	/*Note: K is a sparse matrix, so you need to use the function "add".
 	  For example, to add the variable C to K[i][j], you would use:
 	  K.add(i,j,C);*/
+	  int i = local_dof_indices[A];
+	  int j = local_dof_indices[B];
+	  double C = Klocal(A,B);
+	  //std::cout  << " i,j C:  " << C;
+	  K.add(i,j,C);
+
       }
     }
 
@@ -416,7 +425,7 @@ void FEM<dim>::solve(){
   SparseDirectUMFPACK  A;
   A.initialize(K);
   A.vmult (D, F); //D=K^{-1}*F
-
+  std::cout  << " D:  " << F;
 }
 
 //Output results
