@@ -356,6 +356,7 @@ void FEM<dim>::assemble_system(){
 
     //Loop over local DOFs and quadrature points to populate Flocal and Klocal.
     Flocal = 0.;
+    double Al = pow(10,-4);
     f = pow(10,11);
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int q=0; q<quadRule; q++){
@@ -368,7 +369,10 @@ void FEM<dim>::assemble_system(){
 	//EDIT - Define Flocal.
 	//std::cout  << " Flocal(A) :  " << Flocal(A) ;
       }
+      Flocal(A) = Al*h_e/2.0*Flocal(A);
+      //std::cout  << " Flocal2(A) :  " << Flocal(A) ;
     }
+    std::cout  << " Flocal :  "<< Flocal;
     //Add nonzero Neumann condition, if applicable
     if(prob == 2){ 
       if(nodeLocation[local_dof_indices[1]] == L){
@@ -382,7 +386,7 @@ void FEM<dim>::assemble_system(){
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int B=0; B<dofs_per_elem; B++){
 	for(unsigned int q=0; q<quadRule; q++){
-	    Klocal(A,B) += 2*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q]);
+	    Klocal(A,B) += 2.0*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q]);
 	  //EDIT - Define Klocal.
 	  //std::cout  << "  Klocal(A,B): " << basis_gradient(A,quad_points[q])<<basis_gradient(B,quad_points[q]);
 	}
@@ -392,7 +396,9 @@ void FEM<dim>::assemble_system(){
     //Assemble local K and F into global K and F
     //You will need to used local_dof_indices[A]
     for(unsigned int A=0; A<dofs_per_elem; A++){
+        
       //EDIT - add component A of Flocal to the correct location in F
+      
       /*Remember, local_dof_indices[A] is the global degree-of-freedom number
 	corresponding to element node number A*/
       for(unsigned int B=0; B<dofs_per_elem; B++){
@@ -405,7 +411,6 @@ void FEM<dim>::assemble_system(){
 	  double C = Klocal(A,B);
 	  //std::cout  << " i,j C:  " << C;
 	  K.add(i,j,C);
-
       }
     }
 
@@ -425,7 +430,7 @@ void FEM<dim>::solve(){
   SparseDirectUMFPACK  A;
   A.initialize(K);
   A.vmult (D, F); //D=K^{-1}*F
-  std::cout  << " D:  " << F;
+  std::cout  << " D:  " << D;
 }
 
 //Output results
@@ -473,11 +478,15 @@ double FEM<dim>::l2norm_of_error(){
 	x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
 	u_h += D[local_dof_indices[B]]*basis_function(B,quad_points[q]);
       }
+      u_exact = -1.0/6*pow(x,3) + 0.07/6*x;
+      //std::cout << " x: " << x;
+      l2norm += (u_exact - u_h)*(u_exact - u_h)*h_e/2.0*quad_weight[q];
       //EDIT - Find the l2-norm of the error through numerical integration.
       /*This includes evaluating the exact solution at the quadrature points*/
-							
+      //std::cout << "u_exact: " << u_exact;	
+      //std::cout << "u_h: " << u_h;						
     }
   }
-
+  std::cout << " L2 Norm: " << sqrt(l2norm);	
   return sqrt(l2norm);
 }
