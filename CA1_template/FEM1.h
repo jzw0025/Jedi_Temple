@@ -170,13 +170,13 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
     else if (basisFunctionOrder==2){
         //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
-                value = -xi*(1-xi)/2;
+                value = -xi*(1.0-xi)/2.0;
             }
-            else if (xe == 1.){
-                value = (1+xi)*(1-xi);
-                }
             else if (xe == 0.){
-                value = xi*(1+xi)/2;
+                value = (1.0+xi)*(1.0-xi);
+                }
+            else if (xe == 1.){
+                value = xi*(1.0+xi)/2.0;
                 }
           else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
@@ -218,10 +218,10 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
         if (xe == -1.){
                 value = -(1.-2.*xi)/2.0;
             }
-            else if (xe == 1.){
+            else if (xe == 0.){
                 value = -2.0*xi;
                 }
-            else if (xe == 0.){
+            else if (xe == 1.){
                 value = (1.+2.*xi)/2.0;
                 }
           else{
