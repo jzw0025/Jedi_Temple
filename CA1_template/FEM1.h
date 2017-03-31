@@ -173,7 +173,7 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
                 value = -xi*(1.0-xi)/2.0;
             }
             else if (xe == 0.){
-                value = (1.0+xi)*(1.0-xi);
+                value = 1.0-pow(xi,2);
                 }
             else if (xe == 1.){
                 value = xi*(1.0+xi)/2.0;
@@ -182,6 +182,24 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
               }  
         }
+    else if (basisFunctionOrder==3){
+        if (xe == -1.0){
+                value = -9./16.*(xi+1./3.)*(xi-1./3.)*(xi-1.);
+            }
+            else if (xe +1./3.<0.0001){
+                value = 27./16.*(xi+1.)*(xi-1./3.)*(xi-1.);
+                }
+            else if (xe - 1./3.<0.0001){
+                value = -27./16.*(xi+1.)*(xi+1./3.)*(xi-1.);
+                }
+            else if (xe == 1.0){
+                value = 9./16.*(xi+1.)*(xi+1./3.)*(xi-1./3.);
+                }
+        else{
+              std::cout  << "unknow xe value for the order:" << " xi: " << xe << basisFunctionOrder;
+            }            
+        }
+    
   //EDIT
   return value;
 }
@@ -200,13 +218,14 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
+    std::cout  << " xe: " << xe<< std::endl;
     if (basisFunctionOrder==1){
         //std::cout  << "the basis Function order is:" << basisFunctionOrder;
-        if (xe == -1.){
-                value = -1.0/2;
+        if (xe == -1.0){
+                value = -1.0/2.0;
             }
             else if (xe == 1.){
-                value = 1.0/2;
+                value = 1.0/2.0;
             }
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
@@ -216,19 +235,35 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
     else if (basisFunctionOrder==2){
         //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
-                value = -(1.-2.*xi)/2.0;
+                value = -1.0/2. + xi;
             }
             else if (xe == 0.){
                 value = -2.0*xi;
                 }
             else if (xe == 1.){
-                value = (1.+2.*xi)/2.0;
+                value = 1.0/2.0+xi;
                 }
           else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
               }  
         }
-
+    else if (basisFunctionOrder==3){
+        if (xe == -1.){
+                value = -27./16.*pow(xi,2) + 9./8.*xi + 1./16.;
+            }
+            else if (xe +1./3. < 0.0001){
+                value = 81./16.*pow(xi,2) - 9./8.*xi -27./16.;
+                }
+            else if (xe -1./3. < 0.0001){
+                value = - 81./16.*pow(xi,2) + 9./8.*xi + 27./16.;
+                }
+            else if (xe == 1.0){
+                value = 27./16.*pow(xi,2) + 9./8.*xi -1./16.;
+                }
+        else{
+              std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
+            }            
+        }
   //EDIT
 
   return value;
@@ -312,14 +347,31 @@ void FEM<dim>::setup_system(){
   //Define quadrature rule
   /*A quad rule of 2 is included here as an example. You will need to decide
     what quadrature rule is needed for the given problems*/
-  quadRule = 2; //EDIT - Number of quadrature points along one dimension
+ 
+  //if (basisFunctionOrder==1){
+//  quadRule = 2; //EDIT - Number of quadrature points along one dimension
+//  quad_points.resize(quadRule); quad_weight.resize(quadRule);
+//
+//  quad_points[0] = -sqrt(1./3.); //EDIT
+//  quad_points[1] = sqrt(1./3.); //EDIT
+//
+//  quad_weight[0] = 1.; //EDIT
+//  quad_weight[1] = 1.; //EDIT
+  
+//  } else if (basisFunctionOrder ==2){
+//      
+  quadRule = 3; //EDIT - Number of quadrature points along one dimension
   quad_points.resize(quadRule); quad_weight.resize(quadRule);
 
-  quad_points[0] = -sqrt(1./3.); //EDIT
-  quad_points[1] = sqrt(1./3.); //EDIT
+  quad_points[0] = -sqrt(3./5.); //EDIT
+  quad_points[1] = 0; //EDIT
+  quad_points[2] = sqrt(3./5.); //EDIT
 
-  quad_weight[0] = 1.; //EDIT
-  quad_weight[1] = 1.; //EDIT
+  quad_weight[0] = 5./9.; //EDIT
+  quad_weight[1] = 8./9.; //EDIT
+  quad_weight[2] = 5./9.; //EDIT
+//      
+//      }
 
   //Just some notes...
   std::cout << "   Number of active elems:       " << triangulation.n_active_cells() << std::endl;
@@ -374,6 +426,7 @@ void FEM<dim>::assemble_system(){
     if(prob == 2){ 
       if(nodeLocation[local_dof_indices[1]] == L){
 	//EDIT - Modify Flocal to include the traction on the right boundary.
+	
       }
     }
 
@@ -383,9 +436,8 @@ void FEM<dim>::assemble_system(){
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int B=0; B<dofs_per_elem; B++){
 	for(unsigned int q=0; q<quadRule; q++){
-	    Klocal(A,B) += 2.0*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q]);
+	    Klocal(A,B) += 2.0*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q])*quad_weight[q];
 	  //EDIT - Define Klocal.
-	  //std::cout  << "  Klocal"<< A<<B<<" : " << Klocal(A,B) <<std::endl;
 	  //std::cout  << "  Klocal(A,B): " << basis_gradient(A,quad_points[q])<<basis_gradient(B,quad_points[q]);
 	}
       }
