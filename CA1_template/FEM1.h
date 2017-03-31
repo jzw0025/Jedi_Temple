@@ -183,13 +183,20 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
               }  
         }
     else if (basisFunctionOrder==3){
+        if (node == 2 | node ==3){
+            std::cout<<"xe"<< xe <<" node: " << node << " term: " << -1. + 2.*(node-1.)/basisFunctionOrder << std::endl;
+            bool test = xe ==(-1. + 2.*(node-1.)/basisFunctionOrder);
+            std::cout<<test<< std::endl;
+            }
         if (xe == -1.0){
                 value = -9./16.*(xi+1./3.)*(xi-1./3.)*(xi-1.);
+                
             }
-            else if (xe +1./3.<0.0001){
+            else if (xe ==(-1. + 2.*(node-1.)/basisFunctionOrder)){
                 value = 27./16.*(xi+1.)*(xi-1./3.)*(xi-1.);
+                std::cout<<" values "<< value << std::endl;
                 }
-            else if (xe - 1./3.<0.0001){
+            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){
                 value = -27./16.*(xi+1.)*(xi+1./3.)*(xi-1.);
                 }
             else if (xe == 1.0){
@@ -218,7 +225,6 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
-    std::cout  << " xe: " << xe<< std::endl;
     if (basisFunctionOrder==1){
         //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.0){
@@ -248,17 +254,23 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
               }  
         }
     else if (basisFunctionOrder==3){
-        if (xe == -1.){
-                value = -27./16.*pow(xi,2) + 9./8.*xi + 1./16.;
+        if (node == 2 | node ==3){
+            std::cout<<"xe"<< xe <<" node: " << node << " term: " << -1. + 2.*(node-1.)/basisFunctionOrder << std::endl;
+            bool test = xe ==(-1. + 2.*(node-1.)/basisFunctionOrder);
+            std::cout<<test<< std::endl;
             }
-            else if (xe +1./3. < 0.0001){
-                value = 81./16.*pow(xi,2) - 9./8.*xi -27./16.;
+        if (xe == -1.){
+                value = -27./16.*xi*xi + 9./8.*xi + 1./16.;
+            }
+            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){         
+                value = 81./16.*xi*xi - 9./8.*xi -27./16.;
+                //std::cout<<" values "<< value << std::endl;
                 }
-            else if (xe -1./3. < 0.0001){
-                value = - 81./16.*pow(xi,2) + 9./8.*xi + 27./16.;
+            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){
+                value = - 81./16.*xi*xi - 9./8.*xi + 27./16.;
                 }
             else if (xe == 1.0){
-                value = 27./16.*pow(xi,2) + 9./8.*xi -1./16.;
+                value = 27./16.*xi*xi + 9./8.*xi -1./16.;
                 }
         else{
               std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
