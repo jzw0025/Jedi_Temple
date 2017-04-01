@@ -493,7 +493,7 @@ double FEM<dim>::l2norm_of_error(){
   double u_exact, u_h, x, h_e;
 
   //loop over elements  
-  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active (), 
+  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(), 
     endc = dof_handler.end();
   for (;elem!=endc; ++elem){
 
@@ -511,11 +511,10 @@ double FEM<dim>::l2norm_of_error(){
 	u_h += D[local_dof_indices[B]]*basis_function(B,quad_points[q]);
       }
       if (prob==1){
-           u_exact = -1.0/6*pow(x,3) + 0.07/6*x;
+           u_exact = -1.0/6.*pow(x,3) + 0.07/6*x;
           }
         else if (prob==2){
-            //std::cout<<" prob 2! "<<std::endl;
-             u_exact = -1.0/6*pow(x,3) + (0.105)*x;
+           u_exact = -1.0/6.*pow(x,3) + (0.105)*x;
       }
       l2norm += (u_exact - u_h)*(u_exact - u_h)*h_e/2.0*quad_weight[q];
       //EDIT - Find the l2-norm of the error through numerical integration.
