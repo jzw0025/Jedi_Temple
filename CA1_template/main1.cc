@@ -21,7 +21,7 @@ int main (){
 		unsigned int order = 3;
 
 		//Specify the subproblem: 1 or 2
-		unsigned int problem = 1;
+		unsigned int problem = 2;
 
     FEM<1> problemObject(order,problem);
     

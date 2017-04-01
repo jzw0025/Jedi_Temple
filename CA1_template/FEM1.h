@@ -150,13 +150,11 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
     "node" specifies which node the basis function corresponds to, 
     "xi" is the point (in the bi-unit domain) where the function is being evaluated.
     You need to calculate the value of the specified basis function and order at the given quadrature pt.*/
-    
     double value = 1.; //Store the value of the basis function in this variable
     /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
     if (basisFunctionOrder==1){
-        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
                 value = (1.-xi)/2.;
             }
@@ -166,47 +164,38 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
                 }
-        }
+         }
     else if (basisFunctionOrder==2){
-        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
                 value = -xi*(1.0-xi)/2.0;
             }
             else if (xe == 0.){
-                value = 1.0-pow(xi,2);
+                value = 1.0-xi*xi;
                 }
             else if (xe == 1.){
                 value = xi*(1.0+xi)/2.0;
                 }
-          else{
+            else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
               }  
-        }
+    }
     else if (basisFunctionOrder==3){
-        if (node == 2 | node ==3){
-            std::cout<<"xe"<< xe <<" node: " << node << " term: " << -1. + 2.*(node-1.)/basisFunctionOrder << std::endl;
-            bool test = xe ==(-1. + 2.*(node-1.)/basisFunctionOrder);
-            std::cout<<test<< std::endl;
+        if (xe == -1.){
+                value = (-9./16.)*(xi+1./3.)*(xi-1./3.)*(xi-1.);
             }
-        if (xe == -1.0){
-                value = -9./16.*(xi+1./3.)*(xi-1./3.)*(xi-1.);
-                
-            }
-            else if (xe ==(-1. + 2.*(node-1.)/basisFunctionOrder)){
-                value = 27./16.*(xi+1.)*(xi-1./3.)*(xi-1.);
-                std::cout<<" values "<< value << std::endl;
+            else if (xe ==(-1. + 2.*(2.-1.)/basisFunctionOrder)){
+                value = (27./16.)*(xi+1.)*(xi-1./3.)*(xi-1.);
                 }
-            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){
-                value = -27./16.*(xi+1.)*(xi+1./3.)*(xi-1.);
+            else if (xe ==(-1. + 2.*(3.-1.)/basisFunctionOrder)){
+                value = (-27./16.)*(xi+1.)*(xi+1./3.)*(xi-1.);
                 }
-            else if (xe == 1.0){
-                value = 9./16.*(xi+1.)*(xi+1./3.)*(xi-1./3.);
+            else if (xe == 1.){
+                value = (9./16.)*(xi+1.)*(xi+1./3.)*(xi-1./3.);
                 }
-        else{
+            else{
               std::cout  << "unknow xe value for the order:" << " xi: " << xe << basisFunctionOrder;
             }            
-        }
-    
+        }    
   //EDIT
   return value;
 }
@@ -221,7 +210,6 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
     Note that this is the derivative with respect to xi (not x)*/
 
    double value = 0.; //Store the value of the gradient of the basis function in this variable
-
   /*You can use the function "xi_at_node" (defined above) to get the value of xi (in the bi-unit domain)
     at any node in the element - using deal.II's element node numbering pattern.*/
     double xe  = xi_at_node(node);
@@ -236,10 +224,8 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
                 }
-            //std::cout  << "unknow xe value for the order:" <<value;
         }
     else if (basisFunctionOrder==2){
-        //std::cout  << "the basis Function order is:" << basisFunctionOrder;
         if (xe == -1.){
                 value = -1.0/2. + xi;
             }
@@ -254,37 +240,29 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
               }  
         }
     else if (basisFunctionOrder==3){
-        if (node == 2 | node ==3){
-            std::cout<<"xe"<< xe <<" node: " << node << " term: " << -1. + 2.*(node-1.)/basisFunctionOrder << std::endl;
-            bool test = xe ==(-1. + 2.*(node-1.)/basisFunctionOrder);
-            std::cout<<test<< std::endl;
-            }
         if (xe == -1.){
-                value = -27./16.*xi*xi + 9./8.*xi + 1./16.;
+                value =(-27./16.)*xi*xi + (9./8.)*xi + (1./16.);
             }
-            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){         
-                value = 81./16.*xi*xi - 9./8.*xi -27./16.;
-                //std::cout<<" values "<< value << std::endl;
+            else if (xe == (-1. + 2.*(2.-1.)/basisFunctionOrder)){         
+                value = (81./16.)*xi*xi - (9./8.)*xi - (27./16.);
                 }
-            else if (xe == (-1. + 2.*(node-1.)/basisFunctionOrder)){
-                value = - 81./16.*xi*xi - 9./8.*xi + 27./16.;
+            else if (xe == (-1. + 2.*(3.-1.)/basisFunctionOrder)){
+                value = (- 81./16.)*xi*xi - (9./8.)*xi + (27./16.);
                 }
             else if (xe == 1.0){
-                value = 27./16.*xi*xi + 9./8.*xi -1./16.;
+                value = (27./16.)*xi*xi + (9./8.)*xi - (1./16.);
                 }
         else{
               std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
             }            
         }
   //EDIT
-
   return value;
 }
 
 //Define the problem domain and generate the mesh
 template <int dim>
 void FEM<dim>::generate_mesh(unsigned int numberOfElements){
-
   //Define the limits of your domain
   L = 0.1; //EDIT
   double x_min = 0.;
@@ -360,7 +338,6 @@ void FEM<dim>::setup_system(){
   /*A quad rule of 2 is included here as an example. You will need to decide
     what quadrature rule is needed for the given problems*/
  
-  //if (basisFunctionOrder==1){
 //  quadRule = 2; //EDIT - Number of quadrature points along one dimension
 //  quad_points.resize(quadRule); quad_weight.resize(quadRule);
 //
@@ -369,9 +346,7 @@ void FEM<dim>::setup_system(){
 //
 //  quad_weight[0] = 1.; //EDIT
 //  quad_weight[1] = 1.; //EDIT
-  
-//  } else if (basisFunctionOrder ==2){
-//      
+
   quadRule = 3; //EDIT - Number of quadrature points along one dimension
   quad_points.resize(quadRule); quad_weight.resize(quadRule);
 
@@ -382,8 +357,6 @@ void FEM<dim>::setup_system(){
   quad_weight[0] = 5./9.; //EDIT
   quad_weight[1] = 8./9.; //EDIT
   quad_weight[2] = 5./9.; //EDIT
-//      
-//      }
 
   //Just some notes...
   std::cout << "   Number of active elems:       " << triangulation.n_active_cells() << std::endl;
@@ -429,7 +402,7 @@ void FEM<dim>::assemble_system(){
 	for(unsigned int B=0; B<dofs_per_elem; B++){
 	  x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
 	}
-	Flocal(A) += h_e/2.0*basis_function(A,quad_points[q])*f*x*quad_weight[q];
+	Flocal(A) += Al*h_e/2.0*basis_function(A,quad_points[q])*f*x*quad_weight[q];
 	//EDIT - Define Flocal.
       }
     }
@@ -438,7 +411,8 @@ void FEM<dim>::assemble_system(){
     if(prob == 2){ 
       if(nodeLocation[local_dof_indices[1]] == L){
 	//EDIT - Modify Flocal to include the traction on the right boundary.
-	
+	Flocal[1] += pow(10,6);
+	std::cout<< "running newmann BCS!.";
       }
     }
 
@@ -448,22 +422,11 @@ void FEM<dim>::assemble_system(){
     for(unsigned int A=0; A<dofs_per_elem; A++){
       for(unsigned int B=0; B<dofs_per_elem; B++){
 	for(unsigned int q=0; q<quadRule; q++){
-	    Klocal(A,B) += 2.0*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q])*quad_weight[q];
+	    Klocal(A,B) += Al*2.0*E/h_e*basis_gradient(A,quad_points[q])*basis_gradient(B,quad_points[q])*quad_weight[q];
 	  //EDIT - Define Klocal.
-	  //std::cout  << "  Klocal(A,B): " << basis_gradient(A,quad_points[q])<<basis_gradient(B,quad_points[q]);
-	}
+	 }
       }
     }
-    
-    std::cout << " element length: " << h_e;
-    std::cout << " element dof indices-0-1: " << local_dof_indices[0] << local_dof_indices[1]<<std::endl;  
-    for(unsigned int A=0; A<dofs_per_elem; A++){
-      for(unsigned int B=0; B<dofs_per_elem; B++){
-	  std::cout  << "  Klocal"<< A<<", "<<B<<" : " << Klocal(A,B) <<std::endl;
-	  }
-    }
-
-
     //Assemble local K and F into global K and F
     //You will need to used local_dof_indices[A]
     for(unsigned int A=0; A<dofs_per_elem; A++){
@@ -480,15 +443,9 @@ void FEM<dim>::assemble_system(){
 	  int j = local_dof_indices[B];
 	  double C = Klocal(A,B);
 	  K.add(i,j,C);
-      }
+          }
     }
   }
-      
-      for(unsigned int A=0; A<dof_handler.n_dofs(); A++){
-        for(unsigned int B=0; B<dof_handler.n_dofs(); B++){
-                std::cout<< " K "<<A<<B<<" : "<<K.el(A,B)<<std::endl;
-            }
-        }
 
   //Apply Dirichlet boundary conditions
   /*deal.II applies Dirichlet boundary conditions (using the boundary_values map we
@@ -553,15 +510,17 @@ double FEM<dim>::l2norm_of_error(){
 	x += nodeLocation[local_dof_indices[B]]*basis_function(B,quad_points[q]);
 	u_h += D[local_dof_indices[B]]*basis_function(B,quad_points[q]);
       }
-      u_exact = -1.0/6*pow(x,3) + 0.07/6*x;
-      //std::cout<<u_exact - u_h;
+      if (prob==1){
+           u_exact = -1.0/6*pow(x,3) + 0.07/6*x;
+          }
+        else if (prob==2){
+            //std::cout<<" prob 2! "<<std::endl;
+             u_exact = -1.0/6*pow(x,3) + (0.105)*x;
+      }
       l2norm += (u_exact - u_h)*(u_exact - u_h)*h_e/2.0*quad_weight[q];
       //EDIT - Find the l2-norm of the error through numerical integration.
-      /*This includes evaluating the exact solution at the quadrature points*/
-      //std::cout << "u_exact: " << u_exact;	
-      //std::cout << "u_h: " << u_h;						
+      /*This includes evaluating the exact solution at the quadrature points*/					
     }
   }
-  //std::cout << " L2 Norm: " << sqrt(l2norm);	
   return sqrt(l2norm);
 }
