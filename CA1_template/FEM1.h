@@ -511,7 +511,7 @@ double FEM<dim>::l2norm_of_error(){
 	u_h += D[local_dof_indices[B]]*basis_function(B,quad_points[q]);
       }
       if (prob==1){
-           u_exact = -1.0/6.*pow(x,3) + 0.07/6*x;
+           u_exact = -1.0/6.*pow(x,3) + 0.07/6.*x;
           }
         else if (prob==2){
            u_exact = -1.0/6.*pow(x,3) + (0.105)*x;
