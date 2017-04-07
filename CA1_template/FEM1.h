@@ -178,7 +178,8 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
               }  
-    }
+    } 
+    
     else if (basisFunctionOrder==3){
         if (xe == -1.){
                 value = (-9./16.)*(xi+1./3.)*(xi-1./3.)*(xi-1.);
