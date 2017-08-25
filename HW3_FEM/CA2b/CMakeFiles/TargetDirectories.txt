@@ -1,0 +1,11 @@
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/rebuild_cache.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/edit_cache.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/info.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/strip_comments.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/distclean.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/runclean.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/main2b.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/run.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/release.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/sign.dir
+/Users/junchaowei/Desktop/ad_CA2_template (1)/CA2_template/CA2b/CMakeFiles/debug.dir
