@@ -1,6 +1,6 @@
 from vtk import *
 # The source file
-file_name = "/Users/junchaowei/Desktop/Jedi_Temple/CA2_template/CA2a/solution.vtk"
+file_name = "/Users/junchaowei/Desktop/Jedi_Temple/CA3_template/solution.vtk"
 
 # Read the source file.
 reader = vtkUnstructuredGridReader()
