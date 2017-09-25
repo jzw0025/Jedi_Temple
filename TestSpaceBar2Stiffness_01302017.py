@@ -129,6 +129,7 @@ def ModifiedNodeForces(nodtag, nodval, K, f):
 
 if __name__ == "__main__":
     print "This is a test."
+    import scipy.io as sio
     # this is a test case
     # 40. 60. 120. −40. −60. −120.
     # 60. 90. 180. −60. −90. −180.
@@ -142,7 +143,6 @@ if __name__ == "__main__":
     EleMat = [1.0,0.5,2*np.sqrt(2)]
     EleFab = [100,100,100]
     Km =  SpaceTrussMasterStiffness(NodeCoordinates, ElementNodes, EleMat, EleFab)
-
 
     nodtag = [[1,1,1], [0,1,1], [0,0,1]]
     nodval = [[0,0,0], [0,0,0], [2,1,0]]
@@ -164,3 +164,7 @@ if __name__ == "__main__":
 
     #print np.linalg.solve(Kmod,fmod)
     print spsolve(Kmod,fmod)
+
+    sio.savemat("/Users/junchaowei/Desktop/nodes.mat",{"par1":NodeCoordinates.T})
+    sio.savemat("/Users/junchaowei/Desktop/truss.mat",{"par1":ElementNodes})
+    sio.savemat("/Users/junchaowei/Desktop/values.mat",{"par1":fmod})

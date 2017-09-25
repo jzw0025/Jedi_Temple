@@ -46,7 +46,7 @@ class FEM
 {
  public:
   //Class functions
-  FEM (unsigned int order,unsigned int problem); // Class constructor 
+  FEM (unsigned int order,unsigned int problem); // Class constructor
   ~FEM(); //Class destructor
 
   //Function to find the value of xi at the given node (using deal.II node numbering)
@@ -76,7 +76,7 @@ class FEM
   unsigned int	        quadRule;    //quadrature rule, i.e. number of quadrature points
   std::vector<double>	quad_points; //vector of Gauss quadrature points
   std::vector<double>	quad_weight; //vector of the quadrature point weights
-    
+
   //Data structures
   SparsityPattern       sparsity_pattern; //Sparse matrix pattern
   SparseMatrix<double>  K;		 //Global stiffness (sparse) matrix
@@ -94,7 +94,7 @@ class FEM
 template <int dim>
 FEM<dim>::FEM(unsigned int order,unsigned int problem)
 :
-fe (FE_Q<dim>(order), dim), 
+fe (FE_Q<dim>(order), dim),
   dof_handler (triangulation)
 {
   basisFunctionOrder = order;
@@ -135,7 +135,7 @@ double FEM<dim>::xi_at_node(unsigned int dealNode){
   }
   else{
     std::cout << "Error: you input node number "
-	      << dealNode << " but there are only " 
+	      << dealNode << " but there are only "
 	      << basisFunctionOrder + 1 << " nodes in an element.\n";
     exit(0);
   }
@@ -147,7 +147,7 @@ double FEM<dim>::xi_at_node(unsigned int dealNode){
 template <int dim>
 double FEM<dim>::basis_function(unsigned int node, double xi){
   /*"basisFunctionOrder" defines the polynomial order of the basis function,
-    "node" specifies which node the basis function corresponds to, 
+    "node" specifies which node the basis function corresponds to,
     "xi" is the point (in the bi-unit domain) where the function is being evaluated.
     You need to calculate the value of the specified basis function and order at the given quadrature pt.*/
     double value = 1.; //Store the value of the basis function in this variable
@@ -177,9 +177,9 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
                 }
             else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
-              }  
-    } 
-    
+              }
+    }
+
     else if (basisFunctionOrder==3){
         if (xe == -1.){
                 value = (-9./16.)*(xi+1./3.)*(xi-1./3.)*(xi-1.);
@@ -195,8 +195,8 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
                 }
             else{
               std::cout  << "unknow xe value for the order:" << " xi: " << xe << basisFunctionOrder;
-            }            
-        }    
+            }
+        }
   //EDIT
   return value;
 }
@@ -205,7 +205,7 @@ double FEM<dim>::basis_function(unsigned int node, double xi){
 template <int dim>
 double FEM<dim>::basis_gradient(unsigned int node, double xi){
   /*"basisFunctionOrder" defines the polynomial order of the basis function,
-    "node" specifies which node the basis function corresponds to, 
+    "node" specifies which node the basis function corresponds to,
     "xi" is the point (in the bi-unit domain) where the function is being evaluated.
     You need to calculate the value of the derivative of the specified basis function and order at the given quadrature pt.
     Note that this is the derivative with respect to xi (not x)*/
@@ -238,13 +238,13 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
                 }
           else{
                 std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
-              }  
+              }
         }
     else if (basisFunctionOrder==3){
         if (xe == -1.){
                 value =(-27./16.)*xi*xi + (9./8.)*xi + (1./16.);
             }
-            else if (xe == (-1. + 2.*(2.-1.)/basisFunctionOrder)){         
+            else if (xe == (-1. + 2.*(2.-1.)/basisFunctionOrder)){
                 value = (81./16.)*xi*xi - (9./8.)*xi - (27./16.);
                 }
             else if (xe == (-1. + 2.*(3.-1.)/basisFunctionOrder)){
@@ -255,7 +255,7 @@ double FEM<dim>::basis_gradient(unsigned int node, double xi){
                 }
         else{
               std::cout  << "unknow xe value for the order:" << basisFunctionOrder;
-            }            
+            }
         }
   //EDIT
   return value;
@@ -301,7 +301,7 @@ void FEM<dim>::define_boundary_conds(){
       }
     }
   }
-			
+
 }
 
 //Setup data structures (sparse matrix, vectors)
@@ -338,7 +338,7 @@ void FEM<dim>::setup_system(){
   //Define quadrature rule
   /*A quad rule of 2 is included here as an example. You will need to decide
     what quadrature rule is needed for the given problems*/
- 
+
 //  quadRule = 2; //EDIT - Number of quadrature points along one dimension
 //  quad_points.resize(quadRule); quad_weight.resize(quadRule);
 //
@@ -361,7 +361,7 @@ void FEM<dim>::setup_system(){
 
   //Just some notes...
   std::cout << "   Number of active elems:       " << triangulation.n_active_cells() << std::endl;
-  std::cout << "   Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;   
+  std::cout << "   Number of degrees of freedom: " << dof_handler.n_dofs() << std::endl;
 }
 
 //Form elmental vectors and matrices and assemble to the global vector (F) and matrix (K)
@@ -376,8 +376,8 @@ void FEM<dim>::assemble_system(){
   std::vector<unsigned int> local_dof_indices (dofs_per_elem);
   double										h_e, x, f, E;
 
-  //loop over elements  
-  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(), 
+  //loop over elements
+  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(),
     endc = dof_handler.end();
   for (;elem!=endc; ++elem){
 
@@ -409,7 +409,7 @@ void FEM<dim>::assemble_system(){
     }
     //std::cout  << " Flocal :  "<< Flocal;
     //Add nonzero Neumann condition, if applicable
-    if(prob == 2){ 
+    if(prob == 2){
       if(nodeLocation[local_dof_indices[1]] == L){
 	//EDIT - Modify Flocal to include the traction on the right boundary.
 	Flocal[1] += pow(10,6);
@@ -485,7 +485,7 @@ void FEM<dim>::output_results (){
 
 template <int dim>
 double FEM<dim>::l2norm_of_error(){
-	
+
   double l2norm = 0.;
 
   //Find the l2 norm of the error between the finite element sol'n and the exact sol'n
@@ -493,8 +493,8 @@ double FEM<dim>::l2norm_of_error(){
   std::vector<unsigned int> local_dof_indices (dofs_per_elem);
   double u_exact, u_h, x, h_e;
 
-  //loop over elements  
-  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(), 
+  //loop over elements
+  typename DoFHandler<dim>::active_cell_iterator elem = dof_handler.begin_active(),
     endc = dof_handler.end();
   for (;elem!=endc; ++elem){
 
@@ -503,7 +503,7 @@ double FEM<dim>::l2norm_of_error(){
 
     //Find the element length
     h_e = nodeLocation[local_dof_indices[1]] - nodeLocation[local_dof_indices[0]];
-    
+
     for(unsigned int q=0; q<quadRule; q++){
       x = 0.; u_h = 0., u_exact = 0.;
       //Find the values of x and u_h (the finite element solution) at the quadrature points
@@ -519,7 +519,7 @@ double FEM<dim>::l2norm_of_error(){
       }
       l2norm += (u_exact - u_h)*(u_exact - u_h)*h_e/2.0*quad_weight[q];
       //EDIT - Find the l2-norm of the error through numerical integration.
-      /*This includes evaluating the exact solution at the quadrature points*/					
+      /*This includes evaluating the exact solution at the quadrature points*/
     }
   }
   return sqrt(l2norm);

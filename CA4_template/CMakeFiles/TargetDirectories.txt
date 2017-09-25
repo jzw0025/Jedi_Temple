@@ -1,0 +1,11 @@
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/rebuild_cache.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/edit_cache.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/info.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/strip_comments.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/distclean.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/runclean.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/main4.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/run.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/release.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/sign.dir
+/Users/junchaowei/Desktop/Jedi_Temple/CA4_template/CMakeFiles/debug.dir
